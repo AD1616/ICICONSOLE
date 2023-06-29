@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ICICONSOLE-GPT"
-version = "0.0.1"
+version = "0.0.2"
 description = "GPT Powered Command-line Interface tailored to working with Neo4j Knowledge Graph Databses hosted via Tapis Pods."
 readme = "README.md"
 authors = [{ name = "Sahil Samar", email = "sahilsamar031@gmail.com" }]
@@ -31,7 +31,7 @@ requires-python = ">=3.10"
 dev = []
 
 [project.urls]
-Homepage = "https://github.com/sdsc-hpc-training-org/hello_icicle_auth_clients/tree/main/icicle_rel_03_2023/CLI/ICICONSOLE"
+Homepage = "https://github.com/AD1616/ICICONSOLE/tree/main/ICICONSOLE_GPT"
 
-[project.entry-points."ICICONSOLE.__main__"]
-tomatoes = "ICICONSOLE:__main__"
+[project.entry-points."ICICONSOLE-GPT.__main__"]
+tomatoes = "ICICONSOLE-GPT:__main__"
