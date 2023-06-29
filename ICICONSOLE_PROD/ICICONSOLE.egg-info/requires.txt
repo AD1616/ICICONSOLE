@@ -1,0 +1,6 @@
+tapipy
+py2neo
+pandas
+datascroller
+
+[dev]

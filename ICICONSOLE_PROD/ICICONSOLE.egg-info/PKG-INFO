@@ -1,3 +1,17 @@
+Metadata-Version: 2.1
+Name: ICICONSOLE
+Version: 0.0.10
+Summary: Command-line Interface tailored to working with Neo4j Knowledge Graph Databses hosted via Tapis Pods.
+Author-email: Sahil Samar <sahilsamar031@gmail.com>
+Project-URL: Homepage, https://github.com/sdsc-hpc-training-org/hello_icicle_auth_clients/tree/main/icicle_rel_03_2023/CLI/ICICONSOLE
+Keywords: Tapis,CLI,Agave,HPC,Tapis Pods,TACC,Neo4j
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+
 # ICICONSOLE
 
 ## Overview

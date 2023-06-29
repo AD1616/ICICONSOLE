@@ -1,0 +1,2 @@
+[ICICONSOLE.__main__]
+tomatoes = ICICONSOLE:__main__

@@ -1,4 +1,4 @@
-# ICICONSOLE
+# ICICONSOLE-GPT
 
 ## Overview
 
@@ -6,16 +6,18 @@ ICICONSOLE is designed to provide an efficient and powerful interface to Neo4j K
 
 This application is specialized for knowledge graph querying, and has some basic CYPHER commands built in. 
 
+The difference between ICICONSOLE-GPT and ICICONSOLE is the integration of GPT-3.5 via the OpenAI API. Note that this means to access these features, an OpenAI API key is required; if you don't have one, you can use the rest of the ICICONSOLE features normally.
+
 ### Installation
 
 Requires Python 3.10 or higher. You can clone this repository and manually install the requirements, or you can directly install the application from PyPi.
 
 ```shell 
-pip install ICICONSOLE
+pip install ICICONSOLE-GPT
 ```
 
 ```shell
-python -m ICICONSOLE
+python -m ICICONSOLE-GPT
 ```
 
 **OR**
@@ -25,7 +27,7 @@ git clone https://github.com/sdsc-hpc-training-org/hello_icicle_auth_clients.git
 ```
 
 ```shell
-cd hello_icicle_auth_clients/icicle_rel_03_2023/CLI/ICICONSOLE
+cd ICICONSOLE/ICICONSOLE_GPT/ICICONSOLE/
 ```
 
 ```shell
@@ -36,13 +38,20 @@ pip install pandas
 pip install py2neo
 ```
 
-
 ```shell
 pip install tapipy
 ```
 
 ```shell
-python ICICONSOLE.py
+pip install datascroller
+```
+
+```shell
+pip install openai
+```
+
+```shell
+python __main__.py
 ```
 
 ### First time user guide
