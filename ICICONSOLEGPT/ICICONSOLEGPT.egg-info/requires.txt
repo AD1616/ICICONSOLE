@@ -1,0 +1,7 @@
+tapipy
+py2neo
+pandas
+datascroller
+openai
+
+[dev]

@@ -14,15 +14,13 @@ import json
 import pkg_resources
 from collections import deque
 
-
 try:
-    from . import BasicCypherCommands as bcc
-    from . import Utilities
-except:
     import BasicCypherCommands as bcc
-    import Utilities
+    from Utilities import GracefulExiter, timeout_handler, timeout
+except:
+    from . import BasicCypherCommands as bcc
+    from .Utilities import GracefulExiter, timeout_handler, timeout
 
-from Utilities import GracefulExiter, timeout_handler, timeout
 
 # CHATGPT Setup
 messages = [ {"role": "system", "content": 

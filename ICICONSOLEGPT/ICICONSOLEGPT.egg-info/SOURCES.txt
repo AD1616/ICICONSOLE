@@ -1,0 +1,15 @@
+LICENSE
+MANIFEST.in
+README.md
+pyproject.toml
+ICICONSOLEGPT/BasicCypherCommands.py
+ICICONSOLEGPT/Utilities.py
+ICICONSOLEGPT/__init__.py
+ICICONSOLEGPT/__main__.py
+ICICONSOLEGPT/helpCypher.json
+ICICONSOLEGPT.egg-info/PKG-INFO
+ICICONSOLEGPT.egg-info/SOURCES.txt
+ICICONSOLEGPT.egg-info/dependency_links.txt
+ICICONSOLEGPT.egg-info/entry_points.txt
+ICICONSOLEGPT.egg-info/requires.txt
+ICICONSOLEGPT.egg-info/top_level.txt

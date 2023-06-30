@@ -13,21 +13,21 @@ The difference between ICICONSOLE-GPT and ICICONSOLE is the integration of GPT-3
 Requires Python 3.10 or higher. You can clone this repository and manually install the requirements, or you can directly install the application from PyPi.
 
 ```shell 
-pip install ICICONSOLE-GPT
+pip install ICICONSOLEGPT
 ```
 
 ```shell
-python -m ICICONSOLE-GPT
+python -m ICICONSOLEGPT
 ```
 
 **OR**
 
 ```shell 
-git clone https://github.com/sdsc-hpc-training-org/hello_icicle_auth_clients.git
+git clone https://github.com/AD1616/ICICONSOLE.git
 ```
 
 ```shell
-cd ICICONSOLE/ICICONSOLE_GPT/ICICONSOLE/
+cd ICICONSOLE/ICICONSOLEGPT/ICICONSOLE/
 ```
 
 ```shell
@@ -66,6 +66,6 @@ Once you do this, you will be in a custom made console for interfacing with the 
 MATCH(n) RETURN n LIMIT 10
 ```
 
-If you are not familiar with Cypher, don't worry! This is meant for users who have never used Cypher before. Type in "help" to view some of the built in commands to start exploring the knowledge graph. These built in commands will grow more extensive as time goes on. 
+The key feature of this is that in addition to the built in commands with ICICONSOLE, this application also has the ability to use GPT-3.5 to generate Cypher queries. To do this, use the "GPT" command once in the console, and then enter a query in natural language. 
 
 The welcome message for the Knowledge Graph console contains helpful tips, like "new", "exit", "clear", and "help". 
