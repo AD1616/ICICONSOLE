@@ -1,4 +1,6 @@
-# ICICONSOLE
+# ICICONSOLE PROD DETAILS
+
+**Note: ICICONSOLEGPT is NOT in PROD, and it is currently in development. For details, see the ICICONSOLEGPT README.md.**
 
 ## Overview
 
