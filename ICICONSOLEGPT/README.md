@@ -27,7 +27,7 @@ git clone https://github.com/AD1616/ICICONSOLE.git
 ```
 
 ```shell
-cd ICICONSOLE/ICICONSOLEGPT/ICICONSOLE/
+cd ICICONSOLE/ICICONSOLEGPT/ICICONSOLEGPT/
 ```
 
 ```shell

@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: ICICONSOLEGPT
-Version: 0.0.5
+Version: 0.0.6
 Summary: GPT Powered Command-line Interface tailored to working with Neo4j Knowledge Graph Databses hosted via Tapis Pods.
 Author-email: Sahil Samar <sahilsamar031@gmail.com>
 License: MIT License
@@ -64,7 +64,7 @@ git clone https://github.com/AD1616/ICICONSOLE.git
 ```
 
 ```shell
-cd ICICONSOLE/ICICONSOLEGPT/ICICONSOLE/
+cd ICICONSOLE/ICICONSOLEGPT/ICICONSOLEGPT/
 ```
 
 ```shell

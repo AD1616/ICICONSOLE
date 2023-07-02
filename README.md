@@ -23,11 +23,11 @@ python -m ICICONSOLE
 **OR**
 
 ```shell 
-git clone https://github.com/sdsc-hpc-training-org/hello_icicle_auth_clients.git
+git clone https://github.com/AD1616/ICICONSOLE.git
 ```
 
 ```shell
-cd hello_icicle_auth_clients/icicle_rel_03_2023/CLI/ICICONSOLE
+cd ICICONSOLE/ICICONSOLE_PROD/ICICONSOLE
 ```
 
 ```shell
@@ -38,9 +38,12 @@ pip install pandas
 pip install py2neo
 ```
 
-
 ```shell
 pip install tapipy
+```
+
+```shell
+pip install datascroller
 ```
 
 ```shell
