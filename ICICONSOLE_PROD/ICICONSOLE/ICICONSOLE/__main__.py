@@ -42,7 +42,7 @@ class GracefulExiter():
 
  
 # Base URL for Tapis
-base_url = "https://icicle.tapis.io"
+tapis_base_url = "https://icicle.tapis.io"
 # Global variable to store pod id
 pod_id = ""
 # Global variable to store username, set upon initial input from login to TAPIS
@@ -227,7 +227,7 @@ while(True):
     try:
         try:
             t
-            if t.base_url == base_url and t.username == user and t.access_token:
+            if t.base_url == tapis_base_url and t.username == user and t.access_token:
                 print("Tapis object already exists.")
                 if t.access_token.expires_at < datetime.datetime.now(pytz.utc):
                     raise
@@ -236,8 +236,8 @@ while(True):
         except:
             try:
                 user = str(input("Enter Your TACC Username: "))
-                t = Tapis(base_url = base_url, username=user,
-                        password = getpass('Enter Your TACC Password: '))
+                t = Tapis(base_url = tapis_base_url, username=user,
+                          password = getpass('Enter Your TACC Password: '))
                 t.get_tokens()
                 # After logging in, choosePod is called to begin the workflow for the user.
                 choosePod()

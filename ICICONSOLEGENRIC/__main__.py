@@ -6,21 +6,16 @@ import pandas as pd
 from datascroller import scroll
 from getpass import getpass
 
-import datetime
 import time
-import pytz
 import os
 import signal
-import json
-import pkg_resources
-from collections import deque
 
 try:
     import BasicCypherCommands as bcc
-    from Utilities import GracefulExiter, timeout_handler, timeout
+    from Utilities import GracefulExiter, timeout_handler, timeout, heavyFormat, lightFormat, helpCypher
 except:
     from . import BasicCypherCommands as bcc
-    from .Utilities import GracefulExiter, timeout_handler, timeout
+    from .Utilities import GracefulExiter, timeout_handler, timeout, heavyFormat, lightFormat, helpCypher
 
 
 # CHATGPT Setup
@@ -36,76 +31,46 @@ signal.signal(signal.SIGALRM, timeout_handler)
 flag = GracefulExiter()
 
 
-# Base URL for ICICLE Tapis
-default_base_url = "icicle.tapis.io"
-tapis_base_url = default_base_url
-global https_base_url
+# default values
+default_tapis_base_url = "icicle.tapis.io"
+default_auth_type = "tapis"
+
+
+tapis_base_url = default_tapis_base_url
+auth_type = default_auth_type
+
+
 # Global variable to store pod id
-pod_id = ""
+global pod_id
 # Global variable to store username, set upon initial input from login to TAPIS
-user = ""
+global user
 
 global t
 
 
-# This function formats a message to be like a title
-def heavyFormat(message):
-    print("*" * (len(message) // 2))
-    print("-" * (len(message) // 2))
-    print(message)
-    print("-" * (len(message) // 2))
-    print("*" * (len(message) // 2))
-
-# This function formats a message to be like a subititle 
-def lightFormat(message):
-    print("-" * (len(message) // 2))
-    print(message)
-    print("-" * (len(message) // 2))
-
 # Welcome message, formatted with the heavyFormat function
 heavyFormat("Welcome to ICICONSOLE. Login to get started. ")
 
-# Loads help for cypher commands
-def helpCypher():
-    json_path = pkg_resources.resource_filename(__name__, 'helpCypher.json')
-    print("\n")
-    with open(json_path) as f:
-        help_data = json.load(f)
-    for key, value in help_data.items():
-        print(key + ' : ' + value + '\n')
 
-# The console function is the actual cypher console that you see after logging in and choosing a pod.
-# The console allows you to type in cypher, and run it on the Neo4j pod you are connected to.
-# The console function needs to parameters: a Neo4j graph object, and a pod id. 
-# The graph object allows for queries to be interpreted as Cypher and passed into the Neo4j pod.
-# The pod id is only needed here so that the user can see what pod they are connected to.
-
-command_stack = deque()
-
-def console(graph, pod_id):
+def console(graph, kg):
     global tapis_base_url
-    # Instructions message, formatted with the lightFormat function
     lightFormat("Type \"new\" to access a different pod, or type \"exit\" to leave ICICONSOLE. Type \"help\" for help!\nNote that the scrolling menu, which appears on some queries, has a separate help menu.")
 
-    # Loop so that the console keeps prompting the user for commands, until the user exits
     while(True):
-        # This is reading the actual input from the user; the input message shows the username and the pod id
-        query = str(input("[" + user + "@" + pod_id + "]$ "))
+        query = str(input("[" + user + "@" + kg + "]$ "))
 
         execute_cypher = True
 
         match query:
             case "exit":
                 os._exit(0)
-            # The command to pick a new pod to connect to. Calls the choosePod function, defined below.
             case "new":
                 login()
                 choosePod()
                 execute_cypher = False
-            # The command to clear the screen. Has a recursive call to itself so that the user is once again prompted, and the instruction message is still shown.
             case "clear":
                 os.system('cls' if os.name == 'nt' else 'clear')
-                console(graph, pod_id)
+                console(graph, kg)
                 execute_cypher = False
             case "help":
                 try:
@@ -153,8 +118,6 @@ def console(graph, pod_id):
                     execute_cypher = False
             case _:
                 pass
-
-        command_stack.append(query)
 
         if execute_cypher:
             try:
@@ -229,7 +192,6 @@ def console(graph, pod_id):
 
 # This is the function that allows the user to pick a pod to connect to. It needs no parameters.
 def choosePod():
-
     heavyFormat("Here are the IDs for your available TAPIS Pods: ")
 
     # The below loop prints the pod id for all pods that the TACC user is authorized to. If there are no pods, then the user is notified.
@@ -242,7 +204,7 @@ def choosePod():
             print(str(i) + ". " + pod.pod_id)
             i += 1
     if i == 1:
-        if tapis_base_url != default_base_url:
+        if tapis_base_url != default_tapis_base_url:
             attempt_again = str(input(f"No Tapis pods on {tapis_base_url}. Try another base url? (y/n) "))
             if attempt_again == "y":
                 login()
@@ -252,17 +214,14 @@ def choosePod():
 
     while True:
         global pod_id
-        try: 
+        try:
             # The user gets a list of available pod ids from the above loop, and then enters the id they wish to connect to.
-            # This input is stored in the pod_id variable
             pod_id = str(input("Enter the ID of the pod you want to access: ")).lower()
-            # If the use has no pods or doesn't see what they are looking for, they can exit
             if pod_id == "exit":
                 os._exit(0)
             # Securely getting the username and password associated with the pod for later authentication to connect
             pod_username, password = t.pods.get_pod_credentials(pod_id=pod_id).user_username, t.pods.get_pod_credentials(pod_id=pod_id).user_password
             break
-        # This is if there is trouble getting the username and password
         except:
             if flag.exit():
                 break
@@ -273,15 +232,12 @@ def choosePod():
 
     while True:
         try:
-            # A graph object is created that authenticates with the previously gotten username and password. 
+            # A graph object is created that authenticates with the previously gotten username and password.
             graph = Graph(graph_link, auth=(pod_username, password), secure=True, verify=True)
-            # Entering into the cypher console
             os.system('cls' if os.name == 'nt' else 'clear')
             time.sleep(0.25)
             heavyFormat(f"Hey there {user}! Welcome to the Neo4j Cypher Console for: " + str(pod_id))
-            # Passing in the graph object and the current pod_id to the cypher console, and calling the console function
             console(graph, pod_id)
-        # This catches the error where there is an issue connecting or authenticating to the Pod.
         except Exception as e:
             er = e
             if flag.exit():
@@ -290,17 +246,16 @@ def choosePod():
             break
 
 
-def login():
+def tapis_login():
     global t
     global user
     global tapis_base_url
-    global https_base_url
     while True:
         try:
-            change_base_url = str(input(f"Change base url from {base_url}? (y/n) "))
+            change_base_url = str(input(f"Change base url from {tapis_base_url}? (y/n) "))
             if change_base_url == "y":
-                base_url = str(input("New base url: "))
-            https_base_url = "https://" + base_url
+                tapis_base_url = str(input("New base url: "))
+            https_base_url = "https://" + tapis_base_url
             user = str(input("Enter Your TACC Username: "))
             t = Tapis(base_url=https_base_url, username=user, password=getpass('Enter Your TACC Password: '))
             t.get_tokens()
@@ -309,10 +264,41 @@ def login():
         except:
             if flag.exit():
                 break
-            print(f"Wrong credentials, or you don't have an account on {base_url}.")
+            print(f"Wrong credentials, or you don't have an account on {tapis_base_url}.")
+            login_attempt = str(input("Try again? (y/n) "))
+            if login_attempt == "n":
+                os._exit(0)
+
+
+def local_login():
+    global user
+    user = str(input("username (not for authentication): "))
+    kg = str(input("graph name (not for authentication): "))
+    password = getpass("graph password (if you set it): ")
+    graph = Graph("bolt://localhost:7687", auth=("neo4j", password))
+    console(graph, kg)
+
+
+def login():
+    global auth_type
+    auth_type_input = str(input(f"Change authentication type from {auth_type}? (y/n) "))
+    if auth_type_input == "y":
+        auth_type = str(input("New auth type: "))
+    if "tapis" in auth_type:
+        try:
+            tapis_login()
+        except:
+            os._exit(0)
+    if "local" in auth_type:
+        try:
+            local_login()
+        except:
+            os._exit(0)
 
 
 login()
+
+
 
 
 
