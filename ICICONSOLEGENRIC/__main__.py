@@ -275,7 +275,10 @@ def local_login():
     user = str(input("username (not for authentication): "))
     kg = str(input("graph name (not for authentication): "))
     password = getpass("graph password (if you set it): ")
-    graph = Graph("bolt://localhost:7687", auth=("neo4j", password))
+    try:
+        graph = Graph("bolt://localhost:7687", auth=("neo4j", password))
+    except:
+        print("Download Neo4j Desktop and start a local graph database first.")
     console(graph, kg)
 
 
