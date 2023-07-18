@@ -26,7 +26,7 @@ git clone https://github.com/AD1616/ICICONSOLE.git
 ```
 
 ```shell
-cd ICICONSOLE/ICICONSOLE_PROD/ICICONSOLE
+cd ICICONSOLE/ICICONSOLEGENERIC/ICICONSOLE
 ```
 
 ```shell
@@ -46,7 +46,7 @@ pip install datascroller
 ```
 
 ```shell
-python ICICONSOLE.py
+python __main__.py
 ```
 
 ### First time user setup
