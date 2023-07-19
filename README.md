@@ -1,6 +1,6 @@
 # ICICONSOLE
 
-** Note: The latest version of ICICONSOLE is ICICONSOLEGENRIC **
+**Note: The latest version of ICICONSOLE is ICICONSOLEGENRIC**
 
 
 ## Overview
