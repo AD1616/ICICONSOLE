@@ -1,39 +1,26 @@
 def getAll():
     return "MATCH(n) RETURN n"
 
-def getAllNames():
-    return "MATCH(n) RETURN n.name"
-
 def getOne(id):
     return "MATCH(n) WHERE n.id = '" + id + "' RETURN n"
 
 def getOneByType(type):
     return "MATCH(n:" + type + ") RETURN n"
 
-def getOneByName():
-    name = str(input("Enter name: "))
-    return "MATCH(n) WHERE n.name = '" + name + "' RETURN n"
-
-def allProperty():
-    property = str(input("Enter property: "))
+def allProperty(property):
     return "MATCH(n) RETURN n." + property
 
-def allPropertiesForNode():
-    id = str(input("Enter id: "))
+def allPropertiesForNode(id):
     return "MATCH(n) WHERE n.id = '" + id + "' RETURN keys(n)"
 
-def createSingularNode():
-    label = str(input("Enter label: "))
-    name = str(input("Enter name: "))
+def createSingularNode(label, name):
     return "CREATE (n:" + label + " {name: '" + name + "'})"
 
-def deleteSingularNode():
-    id = str(input("Enter id: "))
+def deleteSingularNode(id):
     return "MATCH(n) WHERE n.id = '" + id + "' DELETE n"
 
-def reverseRelationshipDirection():
-    return
-    f"""MATCH (n:{label1})-[rel:{rel_label}]->(m:{label2})
+def reverseRelationshipDirection(label1, rel_label, label2):
+    return f"""MATCH (n:{label1})-[rel:{rel_label}]->(m:{label2})
     CALL apoc.refactor.invert(rel)
     yield input, output
     RETURN input, output"""

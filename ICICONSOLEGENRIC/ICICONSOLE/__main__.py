@@ -49,7 +49,6 @@ global user
 global t
 
 
-
 # Welcome message, formatted with the heavyFormat function
 heavyFormat("Welcome to ICICONSOLE. Login to get started. ")
 
@@ -58,7 +57,7 @@ def console(graph, kg):
     global tapis_base_url, valid_key
     lightFormat("Type \"new\" to access a different pod, or type \"exit\" to leave ICICONSOLE. Type \"help\" for help!\nNote that the scrolling menu, which appears on some queries, has a separate help menu.")
 
-    while(True):
+    while True:
         query = str(input("[" + user + "@" + kg + "]$ "))
 
         execute_cypher = True
@@ -82,22 +81,49 @@ def console(graph, kg):
                     pass
             case "all":
                 query = bcc.getAll()
-            case "allNames":
-                query = bcc.getAllNames()
-            case "oneByName":
-                query = bcc.getOneByName()
             case "allProperty":
-                query = bcc.allProperty()
+                property = str(input("Enter property: "))
+                query = bcc.allProperty(property)
             case "allProperties":
                 query = bcc.allProperties()
             case "allPropertiesForNode":
                 query = bcc.allPropertiesForNode()
             case "GPT":
                 if not valid_key:
-                    try:
+                    key = os.environ.get("OPENAI_API_KEY")
+                    if key is not None:
                         openai.api_key = os.environ.get("OPENAI_API_KEY")
-                    except:
-                        openai.api_key = getpass("Please enter your OpenAI API key: ")
+                    else:
+                        success = False
+                        while not success:
+                            access_option = str(input("Key not found. Read key via: file, input, env_var "))
+                            if access_option == "file":
+                                file_path = os.environ.get('KEY_FILE')
+                                if file_path is None:
+                                    file_path = str(input("Enter the path to the file with your key: "))
+                                try:
+                                    with open(file_path, 'r') as f:
+                                        file_contents = f.read().strip()
+                                        openai.api_key = file_contents
+                                        os.environ['KEY_FILE'] = file_path
+                                        success = True
+                                except FileNotFoundError:
+                                    print(f"The file '{file_path}' was not found.")
+                                except Exception as e:
+                                    print(f"An error occurred: {e}")
+                            elif access_option == "input":
+                                openai.api_key = getpass("Please enter your OpenAI API key: ")
+                                success = True
+                            elif access_option == "env_var":
+                                env_var = str(input("Enter environment variable name: "))
+                                key = os.environ.get(env_var)
+                                if key is not None:
+                                    openai.api_key = key
+                                else:
+                                    print("Invalid environment variable")
+                            else:
+                                print("Please select a valid option.")
+
                 message = input("[GPT@" + kg + "] ")
                 try:
                     if message:
@@ -108,21 +134,21 @@ def console(graph, kg):
                             chat = openai.ChatCompletion.create(
                                 model="gpt-3.5-turbo", messages=messages
                             )
+                            reply = chat.choices[0].message.content
+                            print(str(reply))
                             valid_key = True
                             os.environ['OPENAI_API_KEY'] = openai.api_key
+
+                            validate = input("Run this? (y/n) ")
+                            if validate == "y":
+                                query = str(reply)
+                            else:
+                                execute_cypher = False
                         except:
                             "Error: OpenAI API key is invalid."
                             valid_key = False
-
-                    reply = chat.choices[0].message.content
-                    print(str(reply))
                 except Exception as e:
                     print(e)
-                validate = input("Run this? (y/n) ")
-                if validate == "y":
-                    query = str(reply)
-                else:
-                    execute_cypher = False
             case _:
                 pass
 
@@ -251,7 +277,6 @@ def choosePod():
                 break
             print("There was a connection error.")
             break
-
 
 
 def tapis_login():

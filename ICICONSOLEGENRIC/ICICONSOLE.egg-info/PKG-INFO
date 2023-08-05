@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: ICICONSOLE
-Version: 0.6.0
+Version: 0.7.0
 Summary: Command-line Interface tailored to working with Neo4j Knowledge Graph Databses.
 Author-email: Sahil Samar <sahilsamar031@gmail.com>
 License:                     GNU GENERAL PUBLIC LICENSE
@@ -775,7 +775,7 @@ Once you access either a Tapis Pod or your local database, you will be in a cust
 MATCH(n) RETURN n LIMIT 10
 ```
 
-If you are not familiar with Cypher, don't worry! This is meant for users who have never used Cypher before. Type in "help" to view some of the built in commands to start exploring the knowledge graph. These commands are very limited however; you can query more creatively and extensively using the power of GPT. Type in the "GPT" command for this. Note that you will need an OpenAI key, which you can get [here](https://beta.openai.com/). Then, you can simply type in a query in natural language and get the Cypher code for it.
+If you are not familiar with Cypher, don't worry! This is meant for users who have never used Cypher before. Type in "help" to view some of the built in commands to start exploring the knowledge graph. These commands are very limited however; you can query more creatively and extensively using the power of GPT. Type in the "GPT" command for this. Note that you will need an OpenAI key, which you can get [here](https://beta.openai.com/). You can tell the program to look for your key in a file or environment variable, or simply type it in as input. Then, you can simply type in a query in natural language and get the Cypher code for it.
 
 The welcome message for the Knowledge Graph console contains helpful tips, like "new", "exit", "clear", and "help". 
 
