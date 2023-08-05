@@ -15,9 +15,11 @@ class GracefulExiter():
 
     def exit(self):
         return self.state
-    
+
+
 def timeout_handler(signum, frame):
     raise TimeoutError("Timeout occurred.")
+
 
 # This function formats a message to be like a title
 def heavyFormat(message):
@@ -27,11 +29,13 @@ def heavyFormat(message):
     print("-" * (len(message) // 2))
     print("*" * (len(message) // 2))
 
+
 # This function formats a message to be like a subititle
 def lightFormat(message):
     print("-" * (len(message) // 2))
     print(message)
     print("-" * (len(message) // 2))
+
 
 # Loads help for cypher commands
 def helpCypher():
@@ -41,5 +45,8 @@ def helpCypher():
         help_data = json.load(f)
     for key, value in help_data.items():
         print(key + ' : ' + value + '\n')
+
+
+
 
 timeout = 20

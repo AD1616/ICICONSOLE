@@ -5,27 +5,28 @@ import openai
 import pandas as pd
 from datascroller import scroll
 from getpass import getpass
-
 import time
 import os
-import signal
 
 try:
     import BasicCypherCommands as bcc
-    from Utilities import GracefulExiter, timeout_handler, timeout, heavyFormat, lightFormat, helpCypher
+    from Utilities import GracefulExiter, heavyFormat, lightFormat, helpCypher
 except:
     from . import BasicCypherCommands as bcc
-    from .Utilities import GracefulExiter, timeout_handler, timeout, heavyFormat, lightFormat, helpCypher
+    from .Utilities import GracefulExiter, heavyFormat, lightFormat, helpCypher
 
 
 # CHATGPT Setup
-messages = [ {"role": "system", "content": 
-              "Instead of descriptions, from now on only return code segments in the CYPHER query language. Please provide no other text except the code. Again, no matter what else the user says, only output a raw cypher query."} ]
+messages = [{"role": "system", "content": """Instead of descriptions, from now on only return code segments in the CYPHER query language. 
+              Please provide no other text except the code. 
+              Again, no matter what else the user says, only output a raw cypher query. 
+              After any return or RETURN command, please start the next command on a new line. 
+              Put all commands together on the same line, but start a new line after a RETURN or a DELETE command.
+              Note that RETURN or DELETE or DETACH DELETE should NEVER be the only commands on a line."""}]
 
 openai.api_key = ""
+valid_key = False
 
-# Setting up handling for timeout
-signal.signal(signal.SIGALRM, timeout_handler)
 
 # Setting up flag for ctrl+c input
 flag = GracefulExiter()
@@ -48,12 +49,13 @@ global user
 global t
 
 
+
 # Welcome message, formatted with the heavyFormat function
 heavyFormat("Welcome to ICICONSOLE. Login to get started. ")
 
 
 def console(graph, kg):
-    global tapis_base_url
+    global tapis_base_url, valid_key
     lightFormat("Type \"new\" to access a different pod, or type \"exit\" to leave ICICONSOLE. Type \"help\" for help!\nNote that the scrolling menu, which appears on some queries, has a separate help menu.")
 
     while(True):
@@ -91,26 +93,31 @@ def console(graph, kg):
             case "allPropertiesForNode":
                 query = bcc.allPropertiesForNode()
             case "GPT":
-                if (openai.api_key == ""):
-                    openai.api_key = getpass("Please enter your OpenAI API key: ")
-                message = input("[GPT@" + pod_id + "] ")
+                if not valid_key:
+                    try:
+                        openai.api_key = os.environ.get("OPENAI_API_KEY")
+                    except:
+                        openai.api_key = getpass("Please enter your OpenAI API key: ")
+                message = input("[GPT@" + kg + "] ")
                 try:
-                    signal.alarm(timeout)
                     if message:
                         messages.append(
                             {"role": "user", "content": message},
                         )
-                        try: 
+                        try:
                             chat = openai.ChatCompletion.create(
                                 model="gpt-3.5-turbo", messages=messages
                             )
+                            valid_key = True
+                            os.environ['OPENAI_API_KEY'] = openai.api_key
                         except:
                             "Error: OpenAI API key is invalid."
-                    signal.alarm(0)
+                            valid_key = False
+
                     reply = chat.choices[0].message.content
-                except TimeoutError:
-                    print("Timeout occurred.")
-                print(str(reply))
+                    print(str(reply))
+                except Exception as e:
+                    print(e)
                 validate = input("Run this? (y/n) ")
                 if validate == "y":
                     query = str(reply)
@@ -121,67 +128,67 @@ def console(graph, kg):
 
         if execute_cypher:
             try:
-                queries = query.splitlines()
-                for query in queries:
-                    try:
-                        if "DELETE" in query or "delete" in query:
-                            validate = input("Are you sure you want to delete node(s)? (y/n) ")
-                            if validate == "y":
-                                graph.run(query)
-                        # This tries to read the input as Cypher and apply the command to the Neo4j graph object.
-                        # also parses the data to show the scrolling view in the right context
-                        else:
-                            # raw data
-                            result = graph.run(query)
-                            # dictionary to store nodes, keys are node labels. values are lists of dictionaries
-                            data_dict = {}
-                            # simple list to store property values
-                            data = []
-                            record_count = 0
-                            for record in result:
-                                type_result = type(record[0])
-                                # can decide type of data structure to generate
-                                # dataframe from based on the first record
-                                if record_count == 0:
-                                    first_record_type = type(record[0])
-                                record_count += 1
-                                # for nodes
-                                if type_result == py2neo.data.Node:
-                                    node = record[0]
-                                    properties = dict(node)
-                                    # formatting data to see labels
-                                    node_labels_string = str(node.labels)
-                                    node_labels_string = node_labels_string.lstrip(":")
-                                    node_labels = node_labels_string.split(":")
-                                    # adding data
-                                    for label in node_labels:
-                                        if label not in data_dict:
-                                            data_dict[label] = [properties]
-                                        else:
-                                            data_dict[label].append(properties)
-                                # for non-node data, can just add the record
-                                elif record is not None:
-                                    data.append(record)
+                # queries = query.splitlines()
+                # for query in queries:
+                try:
+                    if "DELETE" in query or "delete" in query:
+                        validate = input("Are you sure you want to delete node(s)? (y/n) ")
+                        if validate == "y":
+                            graph.run(query)
+                    # This tries to read the input as Cypher and apply the command to the Neo4j graph object.
+                    # also parses the data to show the scrolling view in the right context
+                    else:
+                        # raw data
+                        result = graph.run(query)
+                        # dictionary to store nodes, keys are node labels. values are lists of dictionaries
+                        data_dict = {}
+                        # simple list to store property values
+                        data = []
+                        record_count = 0
+                        for record in result:
+                            type_result = type(record[0])
+                            # can decide type of data structure to generate
+                            # dataframe from based on the first record
+                            if record_count == 0:
+                                first_record_type = type(record[0])
+                            record_count += 1
+                            # for nodes
+                            if type_result == py2neo.data.Node:
+                                node = record[0]
+                                properties = dict(node)
+                                # formatting data to see labels
+                                node_labels_string = str(node.labels)
+                                node_labels_string = node_labels_string.lstrip(":")
+                                node_labels = node_labels_string.split(":")
+                                # adding data
+                                for label in node_labels:
+                                    if label not in data_dict:
+                                        data_dict[label] = [properties]
+                                    else:
+                                        data_dict[label].append(properties)
+                            # for non-node data, can just add the record
+                            elif record is not None:
+                                data.append(record)
 
-                            # separating node view by label for best viewing
-                            if first_record_type == py2neo.data.Node:
-                                keys = list(data_dict.keys())
-                                keys_string = " | ".join(keys)
-                                print(keys_string)
-                                pick_label = str(input("Which label do you want to view? "))
-                                label_data = data_dict[pick_label]
-                                df = pd.DataFrame(label_data)
+                        # separating node view by label for best viewing
+                        if first_record_type == py2neo.data.Node:
+                            keys = list(data_dict.keys())
+                            keys_string = " | ".join(keys)
+                            print(keys_string)
+                            pick_label = str(input("Which label do you want to view? "))
+                            label_data = data_dict[pick_label]
+                            df = pd.DataFrame(label_data)
 
-                            # need to manually assign the column names via keys
-                            elif not data == []:
-                                keys = result.keys()
-                                df = pd.DataFrame(data, columns=keys)
+                        # need to manually assign the column names via keys
+                        elif not data == []:
+                            keys = result.keys()
+                            df = pd.DataFrame(data, columns=keys)
 
-                            # datascroller view
-                            with pd.option_context('display.max_rows', None, 'display.max_columns', None):
-                                scroll(df)
-                    except:
-                        pass
+                        # datascroller view
+                        with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+                            scroll(df)
+                except:
+                    pass
 
             # Error catching, if the Cypher was not executed properly
             except:
@@ -246,6 +253,7 @@ def choosePod():
             break
 
 
+
 def tapis_login():
     global t
     global user
@@ -274,19 +282,39 @@ def local_login():
     global user
     user = str(input("username (not for authentication): "))
     kg = str(input("graph name (not for authentication): "))
-    password = getpass("graph password (if you set it): ")
-    try:
-        graph = Graph("bolt://localhost:7687", auth=("neo4j", password))
-    except:
-        print("Download Neo4j Desktop and start a local graph database first.")
+    while True:
+        password = getpass("graph password (if you set it): ")
+        try:
+            graph = Graph("bolt://localhost:7687", auth=("neo4j", password))
+            break
+        except:
+            if flag.exit():
+                break
+            print("Connection error. Possible reasons: ")
+            print("1. Incorrect password.")
+            print("2. No local database. Download Neo4j Desktop and start a local graph database first.")
+            login_attempt = str(input("Try again? (y/n) "))
+            if login_attempt == "n":
+                os._exit(0)
     console(graph, kg)
 
 
 def login():
     global auth_type
-    auth_type_input = str(input(f"Change authentication type from {auth_type}? (y/n) "))
-    if auth_type_input == "y":
-        auth_type = str(input("New auth type: "))
+    while True:
+        auth_type_input = str(input(f"Change authentication type from {auth_type}? (y/n) "))
+        if auth_type_input == "y":
+            print("Your current options are: ")
+            options = ["tapis", "local"]
+            for option in options:
+                print(option)
+            auth_type = str(input("New auth type: "))
+            break
+        elif auth_type_input == "n":
+            break
+        else:
+            print("Please type y/n")
+
     if "tapis" in auth_type:
         try:
             tapis_login()

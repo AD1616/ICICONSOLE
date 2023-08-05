@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: ICICONSOLE
-Version: 0.4.0
+Version: 0.6.0
 Summary: Command-line Interface tailored to working with Neo4j Knowledge Graph Databses.
 Author-email: Sahil Samar <sahilsamar031@gmail.com>
 License:                     GNU GENERAL PUBLIC LICENSE
@@ -716,7 +716,7 @@ git clone https://github.com/AD1616/ICICONSOLE.git
 ```
 
 ```shell
-cd ICICONSOLE/ICICONSOLE_PROD/ICICONSOLE
+cd ICICONSOLE/ICICONSOLEGENERIC/ICICONSOLE
 ```
 
 ```shell
@@ -736,7 +736,11 @@ pip install datascroller
 ```
 
 ```shell
-python ICICONSOLE.py
+pip install openai
+```
+
+```shell
+python __main__.py
 ```
 
 ### First time user setup
