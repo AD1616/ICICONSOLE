@@ -48,6 +48,10 @@ pip install datascroller
 ```
 
 ```shell
+pip install openai
+```
+
+```shell
 python __main__.py
 ```
 
