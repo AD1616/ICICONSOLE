@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: ICICONSOLE
-Version: 0.7.0
+Version: 0.8.0
 Summary: Command-line Interface tailored to working with Neo4j Knowledge Graph Databses.
 Author-email: Sahil Samar <sahilsamar031@gmail.com>
 License:                     GNU GENERAL PUBLIC LICENSE

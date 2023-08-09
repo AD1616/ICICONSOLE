@@ -58,7 +58,7 @@ def console(graph, kg):
     lightFormat("Type \"new\" to access a different pod, or type \"exit\" to leave ICICONSOLE. Type \"help\" for help!\nNote that the scrolling menu, which appears on some queries, has a separate help menu.")
 
     while True:
-        query = str(input("[" + user + "@" + kg + "]$ "))
+        query = input("[" + user + "@" + kg + "]$ ")
 
         execute_cypher = True
 
@@ -82,7 +82,7 @@ def console(graph, kg):
             case "all":
                 query = bcc.getAll()
             case "allProperty":
-                property = str(input("Enter property: "))
+                property = input("Enter property: ")
                 query = bcc.allProperty(property)
             case "allProperties":
                 query = bcc.allProperties()
@@ -96,11 +96,11 @@ def console(graph, kg):
                     else:
                         success = False
                         while not success:
-                            access_option = str(input("Key not found. Read key via: file, input, env_var "))
+                            access_option = input("Key not found. Read key via: file, input, env_var ")
                             if access_option == "file":
                                 file_path = os.environ.get('KEY_FILE')
                                 if file_path is None:
-                                    file_path = str(input("Enter the path to the file with your key: "))
+                                    file_path = input("Enter the path to the file with your key: ")
                                 try:
                                     with open(file_path, 'r') as f:
                                         file_contents = f.read().strip()
@@ -115,10 +115,11 @@ def console(graph, kg):
                                 openai.api_key = getpass("Please enter your OpenAI API key: ")
                                 success = True
                             elif access_option == "env_var":
-                                env_var = str(input("Enter environment variable name: "))
+                                env_var = input("Enter environment variable name: ")
                                 key = os.environ.get(env_var)
                                 if key is not None:
                                     openai.api_key = key
+                                    success = True
                                 else:
                                     print("Invalid environment variable")
                             else:
@@ -238,7 +239,7 @@ def choosePod():
             i += 1
     if i == 1:
         if tapis_base_url != default_tapis_base_url:
-            attempt_again = str(input(f"No Tapis pods on {tapis_base_url}. Try another base url? (y/n) "))
+            attempt_again = input(f"No Tapis pods on {tapis_base_url}. Try another base url? (y/n) ")
             if attempt_again == "y":
                 login()
             else:
@@ -249,7 +250,7 @@ def choosePod():
         global pod_id
         try:
             # The user gets a list of available pod ids from the above loop, and then enters the id they wish to connect to.
-            pod_id = str(input("Enter the ID of the pod you want to access: ")).lower()
+            pod_id = input("Enter the ID of the pod you want to access: ").lower()
             if pod_id == "exit":
                 os._exit(0)
             # Securely getting the username and password associated with the pod for later authentication to connect
@@ -285,11 +286,11 @@ def tapis_login():
     global tapis_base_url
     while True:
         try:
-            change_base_url = str(input(f"Change base url from {tapis_base_url}? (y/n) "))
+            change_base_url = input(f"Change base url from {tapis_base_url}? (y/n) ")
             if change_base_url == "y":
-                tapis_base_url = str(input("New base url: "))
+                tapis_base_url = input("New base url: ")
             https_base_url = "https://" + tapis_base_url
-            user = str(input("Enter Your TACC Username: "))
+            user = input("Enter Your TACC Username: ")
             t = Tapis(base_url=https_base_url, username=user, password=getpass('Enter Your TACC Password: '))
             t.get_tokens()
             choosePod()
@@ -298,15 +299,15 @@ def tapis_login():
             if flag.exit():
                 break
             print(f"Wrong credentials, or you don't have an account on {tapis_base_url}.")
-            login_attempt = str(input("Try again? (y/n) "))
+            login_attempt = input("Try again? (y/n) ")
             if login_attempt == "n":
                 os._exit(0)
 
 
 def local_login():
     global user
-    user = str(input("username (not for authentication): "))
-    kg = str(input("graph name (not for authentication): "))
+    user = input("username (not for authentication): ")
+    kg = input("graph name (not for authentication): ")
     while True:
         password = getpass("graph password (if you set it): ")
         try:
@@ -318,7 +319,7 @@ def local_login():
             print("Connection error. Possible reasons: ")
             print("1. Incorrect password.")
             print("2. No local database. Download Neo4j Desktop and start a local graph database first.")
-            login_attempt = str(input("Try again? (y/n) "))
+            login_attempt = input("Try again? (y/n) ")
             if login_attempt == "n":
                 os._exit(0)
     console(graph, kg)
@@ -327,13 +328,13 @@ def local_login():
 def login():
     global auth_type
     while True:
-        auth_type_input = str(input(f"Change authentication type from {auth_type}? (y/n) "))
+        auth_type_input = input(f"Change authentication type from {auth_type}? (y/n) ")
         if auth_type_input == "y":
             print("Your current options are: ")
             options = ["tapis", "local"]
             for option in options:
                 print(option)
-            auth_type = str(input("New auth type: "))
+            auth_type = input("New auth type: ")
             break
         elif auth_type_input == "n":
             break
